@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <title>Fidget Spinner</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #1a0033, #000);
+      font-family: Segoe UI, Arial, sans-serif;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      touch-action: none;
+    }
+
+    .ui {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 30px);
+      max-width: 420px;
+      text-align: center;
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10;
+      user-select: none;
+    }
+
+    .spinner-name {
+      font-size: clamp(16px, 4.5vw, 22px);
+      font-weight: 700;
+      margin-bottom: 2px;
+      text-shadow: 0 0 8px rgba(255,255,255,.7);
+    }
+
+    .designer {
+      font-size: clamp(18px, 5.2vw, 25px);
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-shadow: 0 0 12px rgba(255,255,255,.8);
+    }
+
+    .instruction {
+      margin-top: 3px;
+      font-size: clamp(11px, 3.2vw, 14px);
+      opacity: .9;
+    }
+
+    .rpm {
+      margin-top: 3px;
+      font-size: 12px;
+    }
+
+    #rpm {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ui">
+    <div class="spinner-name">Fidget Spinner</div>
+    <div class="designer">Designed by Prakash Kumar</div>
+    <div class="instruction">Drag any arm and flick</div>
+    <div class="rpm">RPM: <span id="rpm">0</span></div>
+  </div>
+
+  <canvas id="cv"></canvas>
+
+  <script>
+    const c = document.getElementById("cv");
+    const ctx = c.getContext("2d");
+
+    function rs() {
+      c.width = innerWidth;
+      c.height = innerHeight;
+    }
+
+    rs();
+    addEventListener("resize", rs);
+
+    let ang = 0, vel = 0, drag = false;
+    let lastAng = 0, lastTime = 0, hue = 0;
+
+    function pAng(x, y) {
+      return Math.atan2(
+        y - c.height / 2,
+        x - c.width / 2
+      );
+    }
+
+    function arm(rot, color) {
+      ctx.save();
+      ctx.rotate(rot);
+
+      let g = ctx.createLinearGradient(-30, -20, 30, -210);
+      g.addColorStop(0, "#111");
+      g.addColorStop(.4, color);
+      g.addColorStop(1, "#fff");
+
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(-35, -15);
+      ctx.quadraticCurveTo(-70, -90, -45, -170);
+      ctx.arc(0, -180, 70, Math.PI, 0);
+      ctx.quadraticCurveTo(70, -90, 35, -15);
+      ctx.closePath();
+      ctx.fill();
+
+      let rg = ctx.createRadialGradient(0, -180, 5, 0, -180, 55);
+      rg.addColorStop(0, "#fff");
+      rg.addColorStop(.3, color);
+      rg.addColorStop(1, "#222");
+
+      ctx.fillStyle = rg;
+      ctx.beginPath();
+      ctx.arc(0, -180, 48, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = color;
+      ctx.beginPath();
+      ctx.arc(0, -180, 45, 0, Math.PI * 2);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 6;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.save();
+
+      const scale = Math.min(c.width, c.height) / 520;
+      const centerY = Math.min(
+        c.height * 0.58,
+        c.height / 2 + Math.max(25, c.height * 0.06)
+      );
+
+      ctx.translate(c.width / 2, centerY);
+      ctx.scale(scale, scale);
+      ctx.rotate(ang);
+
+      let cols = [
+        `hsl(${hue},100%,60%)`,
+        `hsl(${(hue + 120) % 360},100%,60%)`,
+        `hsl(${(hue + 240) % 360},100%,60%)`
+      ];
+
+      arm(0, cols[0]);
+      arm(Math.PI * 2 / 3, cols[1]);
+      arm(Math.PI * 4 / 3, cols[2]);
+
+      ctx.shadowBlur = 40;
+      ctx.shadowColor = "white";
+
+      let cg = ctx.createRadialGradient(0, 0, 5, 0, 0, 70);
+      cg.addColorStop(0, "#fff");
+      cg.addColorStop(.3, "#bbb");
+      cg.addColorStop(1, "#333");
+
+      ctx.fillStyle = cg;
+      ctx.beginPath();
+      ctx.arc(0, 0, 78, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 35, 0, Math.PI * 2);
+      ctx.fillStyle = "silver";
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    let lastFrame = performance.now();
+
+    function loop(now) {
+      const dt = Math.min(32, now - lastFrame);
+      lastFrame = now;
+
+      // Smooth, frame-rate-independent rotation.
+      ang += vel * (dt / 16.6667);
+
+      // Gentle friction keeps the spinner moving longer while staying smooth.
+      vel *= Math.pow(0.9982, dt / 16.6667);
+
+      hue = (hue + Math.abs(vel) * 45 * (dt / 16.6667)) % 360;
+
+      document.getElementById("rpm").textContent =
+        Math.round(Math.abs(vel) * 6000);
+
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+
+    function start(e) {
+      drag = true;
+      const t = e.touches ? e.touches[0] : e;
+      lastAng = pAng(t.clientX, t.clientY);
+      lastTime = performance.now();
+      e.preventDefault();
+    }
+
+    function move(e) {
+      if (!drag) return;
+
+      const t = e.touches ? e.touches[0] : e;
+      const a = pAng(t.clientX, t.clientY);
+      const now = performance.now();
+      let d = a - lastAng;
+
+      if (d > Math.PI) d -= Math.PI * 2;
+      if (d < -Math.PI) d += Math.PI * 2;
+
+      ang += d;
+      vel = d / Math.max(1, now - lastTime) * 28;
+
+      lastAng = a;
+      lastTime = now;
+      e.preventDefault();
+    }
+
+    function end() {
+      drag = false;
+    }
+
+    c.addEventListener("mousedown", start);
+    addEventListener("mousemove", move);
+    addEventListener("mouseup", end);
+
+    c.addEventListener("touchstart", start, { passive: false });
+    c.addEventListener("touchmove", move, { passive: false });
+    c.addEventListener("touchend", end);
+  </script>
+
+</body>
+</html>
