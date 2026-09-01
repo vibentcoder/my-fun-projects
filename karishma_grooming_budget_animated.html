@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karishma's Monthly Grooming Budget</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+:root{
+  --wine:#79163d; --pink:#d83e78; --soft:#fff0f5; --cream:#fffaf7;
+  --ink:#321b25; --muted:#826b75; --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:'DM Sans',sans-serif;color:var(--ink);
+  background:linear-gradient(135deg,#fffaf7 0%,#fff0f5 48%,#fbe2eb 100%);
+  overflow-x:hidden;
+}
+body:before,body:after{
+  content:"";position:fixed;width:320px;height:320px;border-radius:50%;
+  filter:blur(70px);opacity:.28;z-index:-1;animation:float 9s ease-in-out infinite;
+}
+body:before{background:#ef75a5;top:5%;left:-140px}
+body:after{background:#d99aaf;right:-140px;bottom:8%;animation-delay:-4s}
+@keyframes float{50%{transform:translate(35px,-25px) scale(1.08)}}
+
+.wrap{max-width:1120px;margin:auto;padding:20px}
+.hero{
+  min-height:470px;border-radius:34px;padding:52px 7%;position:relative;overflow:hidden;
+  display:flex;align-items:center;background:
+  radial-gradient(circle at 90% 15%,#ffffffcc 0 12%,transparent 13%),
+  linear-gradient(120deg,#fff 0%,#ffe8f0 100%);
+  box-shadow:0 25px 70px #79163d1c;
+}
+.hero-content{position:relative;z-index:2;max-width:680px}
+.kicker{color:var(--pink);font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase}
+h1{font:700 clamp(42px,7vw,76px)/.98 'Playfair Display',serif;color:var(--wine);margin:13px 0}
+.script{font-family:'Playfair Display',serif;font-style:italic;color:var(--pink);font-size:clamp(21px,3vw,30px)}
+.hero p{font-size:18px;color:var(--muted);line-height:1.7;max-width:590px}
+.total-pill{
+  display:inline-flex;align-items:center;gap:10px;padding:13px 20px;border-radius:99px;
+  color:white;background:linear-gradient(90deg,var(--wine),var(--pink));
+  font-weight:800;box-shadow:0 12px 25px #c92f6830
+}
+.decor{position:absolute;right:-20px;bottom:-30px;width:470px;height:470px}
+.flower{position:absolute;font-size:40px;animation:drift 5s ease-in-out infinite}
+.f1{right:70px;top:35px}.f2{right:260px;top:100px;font-size:28px;animation-delay:-1s}
+.f3{right:110px;bottom:90px;font-size:55px;animation-delay:-2s}
+.f4{right:315px;bottom:60px;font-size:32px;animation-delay:-3s}
+@keyframes drift{50%{transform:translateY(-15px) rotate(6deg)}}
+
+.section{margin-top:22px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.card{
+  background:#ffffffc9;border:1px solid #efd9e2;border-radius:22px;padding:22px;
+  box-shadow:0 12px 35px #79163d10;backdrop-filter:blur(10px);
+  transition:.35s;animation:rise .7s both;
+}
+.card:hover{transform:translateY(-7px);box-shadow:0 18px 40px #79163d1c}
+.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.icon{font-size:30px}.label{color:var(--muted);font-size:14px;margin-top:10px}
+.value{font-size:28px;font-weight:800;color:var(--wine);margin-top:4px}
+
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
+.panel{
+  background:#fff;border:1px solid #efd9e2;border-radius:26px;padding:27px;
+  box-shadow:0 14px 40px #79163d12
+}
+.panel h2{font:700 28px 'Playfair Display',serif;color:var(--wine);margin:0 0 20px}
+.item{padding:16px 0;border-bottom:1px solid #f0e2e7}
+.item:last-child{border:0}
+.item-top{display:flex;justify-content:space-between;gap:15px;font-weight:700}
+.price{color:var(--wine)}
+.mini{font-size:13px;color:var(--muted);margin-top:5px}
+.progress{height:9px;background:#f5e5eb;border-radius:99px;margin-top:10px;overflow:hidden}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#e45185,#7b1c43);transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+
+.clothes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.cloth{
+  background:linear-gradient(145deg,#fff7fa,#fff);
+  border:1px solid #f1dce4;border-radius:17px;padding:17px;
+  transition:.3s
+}
+.cloth:hover{transform:scale(1.025)}
+.cloth b{display:block;color:var(--wine);margin-bottom:5px}
+.price-range{font-size:13px;color:var(--muted)}
+
+.plan{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.week{background:#fff5f8;border-radius:17px;padding:17px;border-top:4px solid var(--pink)}
+.week span{display:block;color:var(--muted);font-size:13px;line-height:1.5;margin-top:7px}
+
+.tips{display:grid;gap:10px}
+.tip{padding:14px 16px;border-radius:15px;background:#fff6f9;color:#624954}
+.tip b{color:var(--wine)}
+
+.quote{
+  text-align:center;padding:42px 20px;margin:22px 0;
+  background:linear-gradient(120deg,var(--wine),#a72256);
+  color:white;border-radius:28px;box-shadow:0 20px 45px #79163d25
+}
+.quote h2{font:700 32px 'Playfair Display',serif;margin:0 0 8px}
+.quote p{opacity:.9;margin:0}
+
+footer{text-align:center;color:var(--muted);padding:10px 0 35px;font-size:13px}
+
+@media(max-width:850px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:1fr}
+  .plan{grid-template-columns:repeat(2,1fr)}
+  .decor{opacity:.45;right:-110px}
+}
+@media(max-width:520px){
+  .wrap{padding:12px}.hero{padding:38px 24px;min-height:500px}
+  .cards{grid-template-columns:1fr 1fr}.card{padding:16px}
+  .value{font-size:23px}.clothes{grid-template-columns:1fr}
+  .hero p{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-content">
+    <div class="kicker">A little luxury, every month</div>
+    <h1>Karishma's<br><span class="script">Monthly Grooming Budget</span></h1>
+    <p>A thoughtfully planned monthly allowance for looking beautiful, feeling confident and enjoying a little self-care — without worrying about the budget.</p>
+    <div class="total-pill">♥ Monthly plan&nbsp; ₹6,500</div>
+  </div>
+  <div class="decor" aria-hidden="true">
+    <div class="flower f1">🌸</div><div class="flower f2">✨</div>
+    <div class="flower f3">🌷</div><div class="flower f4">♥</div>
+  </div>
+</header>
+
+<section class="section cards">
+  <div class="card"><div class="icon">👗</div><div class="label">Clothing · 2 items</div><div class="value">₹3,250</div></div>
+  <div class="card"><div class="icon">💄</div><div class="label">Makeup</div><div class="value">₹1,500</div></div>
+  <div class="card"><div class="icon">🧴</div><div class="label">Skincare</div><div class="value">₹750</div></div>
+  <div class="card"><div class="icon">💇‍♀️</div><div class="label">Salon / Beauty</div><div class="value">₹1,000</div></div>
+</section>
+
+<section class="section grid">
+  <div class="panel">
+    <h2>Monthly breakdown</h2>
+    <div class="item">
+      <div class="item-top"><span>👗 Clothing</span><span class="price">₹3,250</span></div>
+      <div class="mini">2 items every month — kurtis, dresses, sarees, jeans, ethnic & western wear.</div>
+      <div class="progress"><div class="fill" data-width="50%"></div></div>
+    </div>
+    <div class="item">
+      <div class="item-top"><span>💄 Makeup</span><span class="price">₹1,500</span></div>
+      <div class="mini">Face, eyes, lips, cheeks, makeup tools and remover.</div>
+      <div class="progress"><div class="fill" data-width="23%"></div></div>
+    </div>
+    <div class="item">
+      <div class="item-top"><span>🧴 Skincare</span><span class="price">₹750</span></div>
+      <div class="mini">Cleanser, moisturizer, sunscreen, body care and lip care.</div>
+      <div class="progress"><div class="fill" data-width="12%"></div></div>
+    </div>
+    <div class="item">
+      <div class="item-top"><span>💇‍♀️ Salon / Beauty</span><span class="price">₹1,000</span></div>
+      <div class="mini">Hair care, facial, threading, cleanup and nails.</div>
+      <div class="progress"><div class="fill" data-width="15%"></div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>💄 Makeup allocation</h2>
+    <div class="tips">
+      <div class="tip"><b>Face · ₹500</b><br>Foundation, compact & concealer</div>
+      <div class="tip"><b>Eyes · ₹400</b><br>Kajal, eyeliner, mascara & eyeshadow</div>
+      <div class="tip"><b>Lips · ₹300</b><br>Lipstick, tint & lip balm</div>
+      <div class="tip"><b>Cheeks · ₹150</b><br>Blush, highlighter & contour</div>
+      <div class="tip"><b>Tools · ₹150</b><br>Remover and makeup tools</div>
+    </div>
+  </div>
+</section>
+
+<section class="section panel">
+  <h2>👗 Two clothing items every month</h2>
+  <div class="clothes">
+    <div class="cloth"><b>Kurtis / Kurti Sets</b><span class="price-range">₹700 – ₹1,800</span></div>
+    <div class="cloth"><b>Tops / Shirts</b><span class="price-range">₹500 – ₹1,200</span></div>
+    <div class="cloth"><b>Dresses / Western Wear</b><span class="price-range">₹800 – ₹2,200</span></div>
+    <div class="cloth"><b>Sarees</b><span class="price-range">₹1,000 – ₹3,000</span></div>
+    <div class="cloth"><b>Jeans / Bottom Wear</b><span class="price-range">₹600 – ₹1,800</span></div>
+    <div class="cloth"><b>Lounge / Nightwear</b><span class="price-range">₹500 – ₹1,200</span></div>
+  </div>
+  <p class="mini">The ₹3,250 clothing allowance is flexible — it can be used for any two items. Unused money can be carried forward for a more expensive saree, outfit or special purchase.</p>
+</section>
+
+<section class="section panel">
+  <h2>📅 A simple month</h2>
+  <div class="plan">
+    <div class="week"><b>Week 1</b><span>Buy the first clothing item.</span></div>
+    <div class="week"><b>Week 2</b><span>Restock makeup & skincare essentials.</span></div>
+    <div class="week"><b>Week 3</b><span>Salon, hair care or nails.</span></div>
+    <div class="week"><b>Week 4</b><span>Buy the second clothing item & restock essentials.</span></div>
+  </div>
+</section>
+
+<section class="section quote">
+  <h2>Because you deserve a little pampering, Karishma ♥</h2>
+  <p>₹6,500 every month · planned with love · for confidence, comfort & self-care</p>
+</section>
+
+<footer>Karishma's personal monthly grooming planner · No budget editing · Simple, private & easy to share</footer>
+</div>
+
+<script>
+const fills=document.querySelectorAll('.fill');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.width=entry.target.dataset.width;
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:.25});
+fills.forEach(x=>observer.observe(x));
+
+// Subtle number count-up for the four headline amounts.
+document.querySelectorAll('.value').forEach(el=>{
+  const target=Number(el.textContent.replace(/[₹,]/g,''));
+  let start=0, duration=900, t0=null;
+  function tick(t){
+    if(!t0)t0=t;
+    const p=Math.min((t-t0)/duration,1);
+    const eased=1-Math.pow(1-p,3);
+    el.textContent='₹'+Math.round(target*eased).toLocaleString('en-IN');
+    if(p<1)requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+});
+</script>
+</body>
+</html>
