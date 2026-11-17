@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cab Locator - Driver Portal</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    padding:20px;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    text-align:center;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#1976d2;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#1259a7;
+}
+
+#msg{
+    margin-top:15px;
+    color:green;
+    text-align:center;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🚖 Driver Portal</h2>
+
+    <input type="text" id="cabNo" placeholder="Enter Cab Number">
+
+    <input type="text" id="pillarNo" placeholder="Enter Pillar Number">
+
+    <button onclick="saveCab()">Update Location</button>
+
+    <div id="msg"></div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC8h9A-5Cc1LNzmaKrWFKLEFcY_RXPbRvA",
+  authDomain: "cab-pillar-no-locator.firebaseapp.com",
+  databaseURL: "https://cab-pillar-no-locator-default-rtdb.firebaseio.com",
+  projectId: "cab-pillar-no-locator",
+  storageBucket: "cab-pillar-no-locator.firebasestorage.app",
+  messagingSenderId: "162288222300",
+  appId: "1:162288222300:web:d2f5ec5a6b177390bea699",
+  measurementId: "G-80KB8SFLLK"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.saveCab = async function() {
+
+    const cabNo = document.getElementById("cabNo").value
+                    .trim()
+                    .toUpperCase();
+
+    const pillarNo = document.getElementById("pillarNo").value
+                    .trim()
+                    .toUpperCase();
+
+    if(!cabNo || !pillarNo){
+        alert("Please enter Cab No and Pillar No");
+        return;
+    }
+
+    await set(ref(db, "cabs/" + cabNo), {
+        cabNo: cabNo,
+        pillarNo: pillarNo,
+        updatedAt: Date.now()
+    });
+
+    document.getElementById("msg").innerHTML =
+        "✅ Location Updated";
+
+    document.getElementById("cabNo").value = "";
+    document.getElementById("pillarNo").value = "";
+}
+
+</script>
+
+</body>
+</html>
