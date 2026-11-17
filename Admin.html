@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    max-width:500px;
+    margin:auto;
+    padding:30px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    font-size:18px;
+    background:red;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+#status{
+    margin-top:20px;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<h2>Admin Panel</h2>
+
+<button onclick="deleteAll()">
+🗑 Delete All Cab Records
+</button>
+
+<div id="status"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+import { getDatabase, ref, remove } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC8h9A-5Cc1LNzmaKrWFKLEFcY_RXPbRvA",
+  authDomain: "cab-pillar-no-locator.firebaseapp.com",
+  databaseURL: "https://cab-pillar-no-locator-default-rtdb.firebaseio.com",
+  projectId: "cab-pillar-no-locator",
+  storageBucket: "cab-pillar-no-locator.firebasestorage.app",
+  messagingSenderId: "162288222300",
+  appId: "1:162288222300:web:d2f5ec5a6b177390bea699"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.deleteAll = async function(){
+
+    const confirmDelete = confirm(
+      "Delete all cab records?"
+    );
+
+    if(!confirmDelete) return;
+
+    await remove(ref(db,"cabs"));
+
+    document.getElementById("status").innerHTML =
+      "✅ All records deleted successfully";
+
+};
+
+</script>
+
+</body>
+</html>
