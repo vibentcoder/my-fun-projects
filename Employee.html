@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cab Locator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f5f5;
+    padding:20px;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+}
+
+h2{
+    margin-bottom:5px;
+}
+
+#todayDate{
+    font-weight:bold;
+    color:#555;
+    margin-bottom:5px;
+}
+
+#currentTime{
+    color:#777;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    box-sizing:border-box;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:8px;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+.cab{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.pillar{
+    color:#1976d2;
+    font-size:20px;
+    margin-top:5px;
+}
+
+.time{
+    color:gray;
+    font-size:13px;
+    margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🚖 Cab Locator</h2>
+
+<div id="todayDate"></div>
+<div id="currentTime"></div>
+
+<input
+id="searchBox"
+type="text"
+placeholder="Search full or partial cab number...">
+
+<div id="results"></div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC8h9A-5Cc1LNzmaKrWFKLEFcY_RXPbRvA",
+  authDomain: "cab-pillar-no-locator.firebaseapp.com",
+  databaseURL: "https://cab-pillar-no-locator-default-rtdb.firebaseio.com",
+  projectId: "cab-pillar-no-locator",
+  storageBucket: "cab-pillar-no-locator.firebasestorage.app",
+  messagingSenderId: "162288222300",
+  appId: "1:162288222300:web:d2f5ec5a6b177390bea699"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const EXPIRY_TIME = 2 * 60 * 60 * 1000;
+
+let allCabs = {};
+
+// DATE & TIME
+function updateDateTime() {
+
+    const now = new Date();
+
+    document.getElementById("todayDate").innerHTML =
+        "📅 " + now.toLocaleDateString("en-IN", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+
+    document.getElementById("currentTime").innerHTML =
+        "🕒 " + now.toLocaleTimeString("en-IN");
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+
+// LOAD FIREBASE DATA
+onValue(ref(db, "cabs"), (snapshot) => {
+
+    allCabs = snapshot.val() || {};
+    renderResults();
+
+});
+
+document
+.getElementById("searchBox")
+.addEventListener("input", renderResults);
+
+// DISPLAY RESULTS
+function renderResults(){
+
+    const search =
+    document.getElementById("searchBox")
+    .value
+    .toUpperCase();
+
+    const now = Date.now();
+
+    let html = "";
+
+    Object.values(allCabs).forEach(cab => {
+
+        if(now - cab.updatedAt > EXPIRY_TIME){
+            return;
+        }
+
+        if(search && !cab.cabNo.includes(search)){
+            return;
+        }
+
+        const mins =
+        Math.floor((now - cab.updatedAt) / 60000);
+
+        html += `
+        <div class="card">
+
+            <div class="cab">
+                🚕 ${cab.cabNo}
+            </div>
+
+            <div class="pillar">
+                📍 Pillar ${cab.pillarNo}
+            </div>
+
+            <div class="time">
+                Updated ${mins} minute(s) ago
+            </div>
+
+        </div>
+        `;
+    });
+
+    if(html === ""){
+        html = "<p>No active cab found.</p>";
+    }
+
+    document.getElementById("results").innerHTML = html;
+}
+
+</script>
+
+</body>
+</html>
